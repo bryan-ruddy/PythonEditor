@@ -9,27 +9,25 @@ BBC's micro:bit device (https://en.wikipedia.org/wiki/Micro_Bit).
 Developer Setup
 ---------------
 
-This editor works with any modern web browser.
+This editor works with any modern web browser. These instructions assume that you have Python 3 installed and you're using some kind of UNIX-y system. If you're on Windows, no fear, all of this is acheivable, you'll just have to tweak the commands slightly.
 
-Assuming you have Python 3 installed you can serve the editor like this::
+Virtual Environment
++++++++++++++++++++
 
-    $ ./show.sh
-    http://localhost:8000/editor.html
-    Serving HTTP on 0.0.0.0 port 8000 ...
+We're going to create a virtual environment for the Python code to live in. This environment will keep the work you do on this project separate from the rest of your projects. This can be really handy when you have several projects on your computer that all want to use slightly different versions of libraries::
 
-As the script tells us, point your browser to http://localhost:8000/editor.html.
+    $ pyvenv venv
+    (venv) $ source venv/bin/activate
+    (venv) $ pip install -r requirements.txt
 
-It's also possible to run the editor directly from the file system like this,
-for example::
+Running the Code
+++++++++++++++++
 
-    $ firefox editor.html
+Easy peasy::
 
-Or by double-clicking on the ``editor.html`` file from your file manager.
+    (venv) $ python app.py
 
-**IMPORTANT**: When the editor is run from the file system, the "sharing"
-button is hidden. Because of security reasons, many local browsers won't allow
-it to function correctly unless the editor is properly served from a network
-domain rather than directly from the file system.
+Then visit http://localhost:5000 to see the editor.
 
 Tests
 +++++
