@@ -13,13 +13,13 @@ is attached to the div with the referenced id.
 */
 function pythonEditor(id) {
     // An object that encapsulates the behaviour of the editor.
-    editor = {};
+    var editor = {};
 
     // Represents the ACE based editor.
     var ACE = ace.edit(id);  // The editor is in the tag with the referenced id.
     ACE.setOptions({
         enableSnippets: true  // Enable code snippets.
-    })
+    });
     ACE.setTheme("ace/theme/kr_theme");  // Make it look nice.
     ACE.getSession().setMode("ace/mode/python");  // We're editing Python.
     ACE.getSession().setTabSize(4); // Tab=4 spaces.
@@ -39,10 +39,10 @@ function pythonEditor(id) {
     // Give the editor user input focus.
     editor.focus = function() {
         ACE.focus();
-    }
+    };
 
     // Set a handler function to be run if code in the editor changes.
-    editor.on_change = function(handler) {
+    editor.onChange = function(handler) {
         ACE.getSession().on('change', handler);
     };
 
@@ -55,7 +55,7 @@ function pythonEditor(id) {
     // Triggers a snippet by name in the editor.
     editor.triggerSnippet = function(snippet) {
         var snippetManager = ace.require("ace/snippets").snippetManager;
-        var snippet = snippetManager.snippetNameMap.python[snippet];
+        snippet = snippetManager.snippetNameMap.python[snippet];
         if(snippet) {
             snippetManager.insertSnippet(ACE, snippet.content);
         }
@@ -107,7 +107,7 @@ function pythonEditor(id) {
                 checksum += chunk[j];
             }
             chunk[4 + 16] = (-checksum) & 0xff;
-            output.push(':' + hexlify(chunk).toUpperCase())
+            output.push(':' + hexlify(chunk).toUpperCase());
         }
         return output.join('\n');
     };
@@ -117,7 +117,7 @@ function pythonEditor(id) {
         var hexlified_python = this.hexlify(this.getCode());
         var insertion_point = ":::::::::::::::::::::::::::::::::::::::::::";
         return firmware.replace(insertion_point, hexlified_python);
-    }
+    };
 
     // Takes a hex blob and turns it into a decoded string.
     editor.unhexlify = function(data) {
@@ -144,7 +144,7 @@ function pythonEditor(id) {
         } else {
             return '';
         }
-    }
+    };
 
     // Given an existing hex file, return the Python script contained therein.
     editor.extractScript = function(hexfile) {
@@ -153,7 +153,7 @@ function pythonEditor(id) {
         if (start_line > 0) {
             var lines = hex_lines.slice(start_line + 1, -2);
             var blob = lines.join('\n');
-            if (blob=='') {
+            if (blob === '') {
                 return '';
             } else {
                 return this.unhexlify(blob);
@@ -161,10 +161,10 @@ function pythonEditor(id) {
         } else {
             return '';
         }
-    }
+    };
 
     return editor;
-};
+}
 
 /*
 The following code contains the various functions that connect the behaviour of
@@ -215,7 +215,7 @@ function web_editor() {
             fontSize = 46;
         }
         setFontSize(fontSize);
-    };
+    }
 
     // Sets up the zoom-out functionality.
     function zoomOut() {
@@ -225,7 +225,7 @@ function web_editor() {
             fontSize = 22;
         }
         setFontSize(fontSize);
-    };
+    }
 
     // This function is called by TouchDevelop to cause the editor to be initialised. It sets things up so the user sees their code or, in the case of a new program, uses some sane defaults.
     function setupEditor(message) {
@@ -233,7 +233,7 @@ function web_editor() {
         EDITOR = pythonEditor('editor');
         if(!message.name) {
             // If there's no name, default to something sensible.
-            setName("microbit")
+            setName("microbit");
         } else {
             setName(message.name);
         }
@@ -266,7 +266,7 @@ function web_editor() {
         });
         window.setTimeout(function () {
             // What to do if the user changes the content of the editor.
-            EDITOR.on_change(function () {
+            EDITOR.onChange(function () {
                 dirty = true;
             });
         }, 1);
@@ -286,12 +286,6 @@ function web_editor() {
                 return confirmationMessage;
             }
         });
-        // Bind the ESCAPE key.
-        $(document).keyup(function(e) {
-            if (e.keyCode == 27) { // ESCAPE
-                $('#link-log').focus();
-            }
-        });
         // Bind drag and drop into editor.
         $('#editor').on('dragover', function(e) {
             e.preventDefault();
@@ -302,8 +296,6 @@ function web_editor() {
             e.stopPropagation();
         });
         $('#editor').on('drop', doDrop);
-        // Focus on the element with TAB-STATE=1
-        $("#command-download").focus();
     }
 
     // This function describes what to do when the download button is clicked.
@@ -323,17 +315,18 @@ function web_editor() {
 
     // This function describes what to do when the save button is clicked.
     function doSave() {
-        var output = EDITOR.getCode();
-        var ua = navigator.userAgent.toLowerCase();
-        if((ua.indexOf('safari/') > -1) && (ua.indexOf('chrome') == -1)) {
-            alert("Safari has a bug that means your work will be downloaded as an un-named file. Please rename it to something ending in .py. Alternatively, use a browser such as Firefox or Chrome. They do not suffer from this bug.");
-            window.open('data:application/octet;charset=utf-8,' + encodeURIComponent(output), '_newtab');
-        } else {
-            var filename = getName().replace(" ", "_");
-            var blob = new Blob([output], {type: "text/plain"});
-            saveAs(blob, filename + ".py");
-        }
-        dirty = false;
+        // TODO: Push code into new gist, forking the current gist if available
+    }
+
+    // This function describes what to do when the load button is clicked.
+    function doLoad() {
+        // TODO: Display a modal that asks for a gist URL to load
+    }
+
+    // This function describes what to do when the explore button is clicked.
+    function doExplore() {
+        // TODO: Open a modal that shows the forks of the current gist
+        // TODO: If no gist is loaded then show the load modal first
     }
 
     // This function describes what to do when the snippets button is clicked.
@@ -351,9 +344,9 @@ function web_editor() {
                     description = name.substring(name.indexOf(' - '),
                                                  name.length);
                     return description.replace(' - ', '');
-                }
+                };
             }
-        }
+        };
         vex.open({
             content: Mustache.render(template, context),
             afterOpen: function(vexContent) {
@@ -364,37 +357,6 @@ function web_editor() {
                     EDITOR.focus();
                 });
             }
-        });
-    }
-
-    function doShare() {
-        // Triggered when the user wants to generate a link to share their code.
-        var template = $('#share-template').html();
-        Mustache.parse(template);
-        var qs_array = [];
-        qs_array.push('name=' + encodeURIComponent(getName()));
-        qs_array.push('comment=' + encodeURIComponent(getDescription()));
-        qs_array.push('code=' + encodeURIComponent(EDITOR.getCode()));
-        var old_url = window.location.href.split('?');
-        var new_url = old_url[0].replace('#', '') + '?' + qs_array.join('&');
-        // shortener API
-        var url = "https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyB2_Cwh5lKUX4a681ZERd3FAt8ijdwbukk";
-        $.ajax(url, {
-            type: "POST",
-            contentType: 'application/json',
-            data: JSON.stringify({
-                longUrl: new_url
-            })
-        }).done(function( data ) {
-            console.log(data);
-            vex.open({
-                content: Mustache.render(template, {})
-            })
-            $('#direct-link').attr('href', data.id);
-            $('#direct-link').text(data.id);
-            $('#twitter-button').html('<a href="https://twitter.com/share" class="twitter-share-button" data-url="' + data.id +'" data-text="Check out this cool MicroPython script! :-)" data-via="ntoll" data-hashtags="bbcmicrobit" data-dnt="true">Tweet</a>');
-            $('#facebook-button').attr('src', 'https://www.facebook.com/plugins/share_button.php?href=' + encodeURIComponent(data.id) + '&layout=button&size=small&mobile_iframe=true&width=59&height=20&appId');
-            twttr.widgets.load();
         });
     }
 
@@ -410,7 +372,7 @@ function web_editor() {
             setDescription('Extracted from a Python file');
             reader.onload = function(e) {
                 EDITOR.setCode(e.target.result);
-            }
+            };
             reader.readAsText(file);
             EDITOR.ACE.gotoLine(EDITOR.ACE.session.getLength());
         } else if (ext == 'hex') {
@@ -421,7 +383,7 @@ function web_editor() {
                 if (code.length < 8192) {
                     EDITOR.setCode(code);
                 }
-            }
+            };
             reader.readAsText(file);
             EDITOR.ACE.gotoLine(EDITOR.ACE.session.getLength());
         }
@@ -430,24 +392,17 @@ function web_editor() {
 
     // Join up the buttons in the user interface with some functions for handling what to do when they're clicked.
     function setupButtons() {
-        $("#command-download").click(function () {
-            doDownload();
-        });
-        $("#command-save").click(function () {
-            doSave();
-        });
-        $("#command-snippet").click(function () {
-            doSnippets();
-        });
-        $("#command-share").click(function () {
-            doShare();
-        });
+        $("#command-download").click(doDownload);
+        $("#command-save").click(doSave);
+        $("#command-load").click(doLoad);
+        $("#command-explore").click(doExplore);
+        $("#command-snippet").click(doSnippets);
     }
 
     // Extracts the query string and turns it into an object of key/value pairs.
     function get_qs_context() {
         var query_string = window.location.search.substring(1);
-        if(window.location.href.indexOf("file://") == 0 ) {
+        if(window.location.href.indexOf("file://") === 0 ) {
             // Running from the local file system so switch off network share.
             $('#command-share').hide();
             return {};
@@ -463,7 +418,7 @@ function web_editor() {
 
     setupEditor(get_qs_context());
     setupButtons();
-};
+}
 
 // Call the web_editor function to start the editor running.
 web_editor();
