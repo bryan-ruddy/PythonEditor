@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-    <!--       
+    <!--
                                                                              .:://++++++//:-.
                                                                            .++/::++++++++++++/`
-                                                                           :++   /+++++++++++/:          
-                                                                           :++/:/++++++++++////    
+                                                                           :++   /+++++++++++/:
+                                                                           :++/:/++++++++++////
   __  __ _                _____       _   _                                .---------+++//////:
- |  \/  (_)              |  __ \     | | | |                        -:///////////////++///////: ddddhs: 
+ |  \/  (_)              |  __ \     | | | |                        -:///////////////++///////: ddddhs:
  | \  / |_  ___ _ __ ___ | |__) |   _| |_| |__   ___  _ __        -++++++++++++++++++/////////: ddddddds`
  | |\/| | |/ __| '__/ _ \|  ___/ | | | __| '_ \ / _ \| '_ \      .+++++++++++++++++///////////: ddddddddo
  | |  | | | (__| | | (_) | |   | |_| | |_| | | | (_) | | | |     /+++++++++++++++/////////////`/ddddddddd
@@ -68,7 +68,7 @@ Nicholas and Damien.
         <link rel="icon" href="static/img/favicon.ico">
     </head>
     <body>
-        <script id="snippet-template" type="x-tmpl-mustache">
+        <script id="snippet-template" type="x-tmpl-mustache">{% raw %}
             <h2><i class="fa fa-cogs"></i> <strong>Code Snippets</strong></h2>
             <p>Code snippets are short blocks of code to re-use in your
             own programs. There are snippets for most common things you'll
@@ -89,7 +89,7 @@ Nicholas and Damien.
                 {{/snippets}}
             </table>
 
-        </script>
+        {% endraw %}</script>
         <script id="share-template" type="x-tmpl-mustache">
             <h2><i class="fa fa-share-alt"></i> <strong>Share Code</strong></h2>
             <p>This link points to your code:
@@ -180,9 +180,9 @@ Nicholas and Damien.
                 </div>
             </div>
         </div>
-        <script src="ace/ace.js" type="application/javascript"
+        <script src="static/ace/ace.js" type="application/javascript"
             charset="utf-8"></script>
-        <script src="ace/ext-language_tools.js" type="application/javascript"
+        <script src="static/ace/ext-language_tools.js" type="application/javascript"
             charset="utf-8"></script>
         <script src="static/js/jquery-2.1.4.min.js"
             type="application/javascript"></script>
@@ -191,7 +191,7 @@ Nicholas and Damien.
             type="application/javascript"></script>
         <script src="static/js/mustache.min.js"
             type="application/javascript"></script>
-        <script src="python-main.js"
+        <script src="static/js/python-main.js"
             type="application/javascript"></script>
         <script>vex.defaultOptions.className = 'vex-theme-wireframe';</script>
         <script type="text/javascript" charset="utf-8" async="" src="https://platform.twitter.com/js/button.c9025956238e7d486d74379e14f50282.js"></script>
