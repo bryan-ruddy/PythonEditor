@@ -321,6 +321,19 @@ function web_editor() {
     // This function describes what to do when the load button is clicked.
     function doLoad() {
         // TODO: Display a modal that asks for a gist URL to load
+        var url = window.prompt("GIST URL");
+        // var url = 'https://gist.github.com/ben-dent/8c8f0625d99fe2841d45ebe1b5d0b8c9';
+        var id = url.split('/').pop();
+        var githubAPI = 'https://api.github.com/gists/' + id;
+
+        $.getJSON(githubAPI, function(data){
+            var unsplit = data.files["microbit.py"].content;
+            var split = unsplit.split('#~*');
+            EDITOR.setCode(split[0]);
+            var header = split[1].split(',');
+            setDescription(header[0]);
+            setName(header[1]);
+        });
     }
 
     // This function describes what to do when the explore button is clicked.
