@@ -315,7 +315,28 @@ function web_editor() {
 
     // This function describes what to do when the save button is clicked.
     function doSave() {
+        console.log("works");
+        var content = EDITOR.getCode() + "#~*" + getDescription() + "," + getName();
+        console.error(content);
+        var gistpush = {
+            "description": getDescription(),
+            "public": true,
+            "files": {
+                "microbit.py": {
+                    "content": content
+                }
+            }
+        };
+        $.ajax({
+            type: 'POST',
+            url: 'https://api.github.com/gists',
+            data: JSON.stringify(gistpush),
+            success: function(gist,message,raw){alert(gist.html_url)}
+        });
+
+
         // TODO: Push code into new gist, forking the current gist if available
+
     }
 
     // This function describes what to do when the load button is clicked.
