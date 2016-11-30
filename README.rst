@@ -29,6 +29,19 @@ Easy peasy::
 
 Then visit http://localhost:5000 to see the editor.
 
+Enabling Cloud Save/Fork Features
++++++++++++++++++++++++++++++++++
+
+The code in the editor can be saved into the "cloud" using GitHub Gists. In order for this to work you have to create a "Personal Access Token" that will be used to authenticate against the GitHub API. See you GitHub account's settings pages for how to do this, you'll need to give your token the "gist" permission.
+
+Once you have a token you can either save in the environment like this:
+
+    (venv) $ export GITHUB_API_TOKEN=XXX
+
+Or you can save it into a file called `config.py` that contains:
+
+    GITHUB_API_TOKEN = "XXX"
+
 Tests
 +++++
 
