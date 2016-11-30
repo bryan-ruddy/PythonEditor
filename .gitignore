@@ -3,3 +3,5 @@ venv
 .DS_Store
 .spyproject/
 foundation-6.2.4-complete/
+config.py
+__pycache__
