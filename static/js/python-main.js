@@ -457,12 +457,6 @@ function web_editor() {
             });
         } 
     }
-<<<<<<< HEAD
-
-=======
-        // TODO: Open a modal that shows the forks of the current gist
-    
->>>>>>> ac5ee8722f7744cd62d1283db8ca79ae9a66f322
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {
         // Snippets are triggered by typing a keyword followed by pressing TAB.
