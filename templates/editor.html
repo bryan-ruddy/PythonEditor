@@ -90,11 +90,27 @@ Nicholas and Damien.
             </table>
 
         {% endraw %}</script>
+        <script id="explore-template" type="x-tmpl-mustache">{% raw %}
+            <h2><i class="fa fa-cogs"></i> <strong>Explore</strong></h2>
+            <p></p>
+            <ul class="explore-list" >
+                {{#authors}}
+                    <li class="explore-entry">
+                        <button type="submit" class="open author" data-name="{{.}}">
+                            {{.}}
+                        </button>
+                    </li>
+                {{/authors}}
+            <ul>
+        {% endraw %}
+        </script>
+
 
         <script id="save-template" type="x-tmpl-mustache">{% raw %}
-            <h2>Here's your Save ID</h2>
+            <h2>Heres your Save ID</h2>
             <p>{{ gistID }}</p>
-        {% endraw %}</script>
+            {% endraw %}
+        </script>
 
         <script id="save-noauthor" type="x-tmpl-mustache">{% raw %}
             <h2>Please enter your author name to save:</h2>
@@ -116,6 +132,7 @@ Nicholas and Damien.
                     </div>
                     <div class="roundlabel">Download</div>
                 </a>
+
                 <a href="#" class="roundbutton" id="command-load"
                     data-toggle="modal" data-target="#loadModal"
                     tabindex="2"
@@ -125,6 +142,7 @@ Nicholas and Damien.
                     </div>
                     <div class="roundlabel">Load</div>
                 </a>
+
                 <a href="#" class="roundbutton" id="command-save"
                     tabindex="2"
                     title="Save your Python code to a new gist">

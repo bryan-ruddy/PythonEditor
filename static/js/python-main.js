@@ -399,9 +399,10 @@ function web_editor() {
     // This function describes what to do when the load button is clicked.
     function doLoad() {
         // TODO: Display a modal that asks for a gist URL to load
-        var url = window.prompt("GIST URL");
-        gistID = url;
-        if (url !== null){
+        if(gistID === ""){
+            var url = window.prompt("GIST URL");
+            gistID = url;
+        }else{
             var id = url.split('/').pop();
             var githubAPI = '/load/' + id + '/' + 'microbit' + '.py';
 
@@ -415,26 +416,53 @@ function web_editor() {
             });
         }  
     }
+
+    function doLoadAuthor(author) {
+            var githubAPI = '/load/' + gistID + '/' + author + '.py';
+
+            $.getJSON(githubAPI, function(data){
+                var unsplit = data.content;
+                var split = unsplit.split('#~*');
+                EDITOR.setCode(split[0]);
+                var header = split[1].split(',');
+                setDescription(header[0]);
+                setName(header[1]);
+            });
+    }  
+    
+
     // This function describes what to do when the explore button is clicked.
     function doExplore() {
-        var authors = {};
-
         if(gistID === ""){
             alert("You must load a gist before attempting to explore the files");
         }else{
             $.ajax({
-                url: "/explore/" + gistID, 
+                url: "/explore/" + gistID +"/", 
                 type: 'GET',
-                contentType: "/application/json/",
+                contentType: "application/json",
                 success: function(info){
-                    authors = info
-                                    }
+                    console.log(info);
+                    var template = $('#explore-template').html();
+                    Mustache.parse(template);
+                    
+                    vex.open({
+                        content: Mustache.render(template, info) 
+                    });
+                    $(".open.author").click(function() {
+                        doLoadAuthor($(this).data("name"))
+                        vex.close()
+                    });
 
+                }
             });
-        }
+        } 
     }
+<<<<<<< HEAD
+
+=======
         // TODO: Open a modal that shows the forks of the current gist
     
+>>>>>>> ac5ee8722f7744cd62d1283db8ca79ae9a66f322
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {
         // Snippets are triggered by typing a keyword followed by pressing TAB.
