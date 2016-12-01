@@ -179,6 +179,7 @@ function web_editor() {
 
     // Stores the latest gist link but this will be empty at start
     var gistID = "";
+
     // Sets the description associated with the code displayed in the UI.
     function setDescription(x) {
         $("#author").val(x);
@@ -314,7 +315,7 @@ function web_editor() {
                 var blob = new Blob([output], {type: "application/octet-stream"});
                 saveAs(blob, filename + ".hex");
             } else {
-                var filename = (author + '.py').replace(" ", "_");
+                var filename = (getDescription() + '.py').replace(" ", "_");
                 var blob = new Blob([output], {type: "application/octet-stream"});
                 saveAs(blob, filename + ".hex");
             }
