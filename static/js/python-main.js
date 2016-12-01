@@ -360,7 +360,25 @@ function web_editor() {
                 Mustache.parse(template);
                 vex.open({
                     content: Mustache.render(template)
-                })
+                });
+                $("#command-saveAuthor").click(function() {
+                    var author = $("#authorName").val();
+
+                    $.ajax({
+                    type: 'POST',
+                    url: '/save/' + gistID + '/' + author + '.py',
+                    contentType: "application/json",
+                    data: JSON.stringify(gistpush),
+                    success: function(gist, message, raw) {
+                        icon.addClass("fa-download");
+                        icon.removeClass("fa-spin").removeClass("fa-spinner");
+                        setDescription(author);
+                        vex.close();
+                    }
+                });
+
+                    
+                });
 
                 icon.addClass("fa-download");
                 icon.removeClass("fa-spin").removeClass("fa-spinner");
@@ -406,6 +424,7 @@ function web_editor() {
         }
     }
         // TODO: Open a modal that shows the forks of the current gist
+    
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {
         // Snippets are triggered by typing a keyword followed by pressing TAB.
