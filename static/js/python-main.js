@@ -390,7 +390,6 @@ function web_editor() {
     }
 
     function doLoadAuthor(author) {
-        // TODO: Display a modal that asks for a gist URL to load
             var githubAPI = '/load/' + gistID + '/' + author + '.py';
 
             $.getJSON(githubAPI, function(data){
@@ -430,7 +429,7 @@ function web_editor() {
             });
         } 
     }
-        // TODO: Open a modal that shows the forks of the current gist
+
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {
         // Snippets are triggered by typing a keyword followed by pressing TAB.
