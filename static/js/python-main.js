@@ -242,7 +242,7 @@ function web_editor() {
         }
         if (!message.comment) {
             // If there's no description, default to something sensible.
-            setDescription("microbit");
+            setDescription("");
         } else {
             setDescription(message.comment);
         }
@@ -318,6 +318,10 @@ function web_editor() {
 
     // This function describes what to do when the save button is clicked.
     function doSave() {
+        var icon = $("#command-save i");
+        icon.removeClass("fa-download");
+        icon.addClass("fa-spin").addClass("fa-spinner");
+
         var content = EDITOR.getCode() + "#~*" + getDescription();
         var gistpush = {
             "content": content
@@ -331,32 +335,38 @@ function web_editor() {
                 data: JSON.stringify(gistpush),
                 success: function(gist, message, raw) {
                     gistID = gist.id;
-                    alert("Gist link" + '\n\n' + gistID);
+                    var template = $('#save-template').html();
+                    Mustache.parse(template);
+                    vex.open({
+                        content: Mustache.render(template, {gistID, gistID})
+                    });
+                    icon.addClass("fa-download");
+                    icon.removeClass("fa-spin").removeClass("fa-spinner");
                 }
             });
-
-        }
-
-        else {
-
-            if (getDescription() !== "microbit"){
+        } else {
+            if (getDescription() !== "microbit" && getDescription() !== ""){
                 $.ajax({
                     type: 'POST',
                     url: '/save/' + gistID + '/' + getDescription() + '.py',
                     contentType: "application/json",
                     data: JSON.stringify(gistpush),
                     success: function(gist, message, raw) {
-                    alert("Gist ID" + '\n\n' + gistID);
+                        icon.addClass("fa-download");
+                        icon.removeClass("fa-spin").removeClass("fa-spinner");
                     }
+                });
+            } else {
+                var template = $('#save-noauthor').html();
+                Mustache.parse(template);
+                vex.open({
+                    content: Mustache.render(template)
                 })
-            }
 
-            else {
-                alert("File name is not permitted to be microbit")
-
+                // icon.addClass("fa-download");
+                // icon.removeClass("fa-spin").removeClass("fa-spinner");
             }
         }
-            
     }
 
     // This function describes what to do when the load button is clicked.
@@ -380,8 +390,7 @@ function web_editor() {
     }
     // This function describes what to do when the explore button is clicked.
     function doExplore() {
-        // TODO: Open a modal that shows the forks of the current gist
-        // TODO: If no gist is loaded then show the load modal first
+        
     }
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {

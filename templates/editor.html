@@ -91,6 +91,18 @@ Nicholas and Damien.
             </table>
 
         {% endraw %}</script>
+
+        <script id="save-template" type="x-tmpl-mustache">{% raw %}
+            <h2>Here's your Save ID</h2>
+            <p>{{ gistID }}</p>
+        {% endraw %}</script>
+
+        <script id="save-noauthor" type="x-tmpl-mustache">{% raw %}
+            <h2>Please enter your author name to save:</h2>
+            <input type = "text" id = "authorName">
+            <button> id = "command-saveAuthor">Save</button>
+        {% endraw %}</script>
+
         <div id="main" class="vbox">
           <div id="toolbox" class="hbox">
             <div id="commands" class="hbox">
