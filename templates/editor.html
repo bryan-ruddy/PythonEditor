@@ -90,6 +90,28 @@ Nicholas and Damien.
             </table>
 
         {% endraw %}</script>
+
+        <script id="explore-template" type="x-tmpl-mustache">{% raw %}
+            <h2><i class="fa fa-cogs"></i> <strong>Explore</strong></h2>
+            <p></p>
+            <ul class="explore-list" >
+                {{#entries}}
+                    <li class="explore-entry">
+                        <button type="submit" id="explore-button">
+                            {{author}}
+                        </button>
+                    </li>
+                {{/entries}}
+            <ul>
+        </script>
+
+
+
+{% endraw %}</script>
+
+
+
+
         <div id="main" class="vbox">
           <div id="toolbox" class="hbox">
             <div id="commands" class="hbox">
@@ -103,6 +125,7 @@ Nicholas and Damien.
                     </div>
                     <div class="roundlabel">Billy</div>
                 </a>
+
                 <a href="#" class="roundbutton" id="command-load"
                     data-toggle="modal" data-target="#loadModal"
                     tabindex="2"
@@ -112,6 +135,7 @@ Nicholas and Damien.
                     </div>
                     <div class="roundlabel">Load</div>
                 </a>
+
                 <a href="#" class="roundbutton" id="command-save"
                     tabindex="2"
                     title="Save your Python code to a new gist">

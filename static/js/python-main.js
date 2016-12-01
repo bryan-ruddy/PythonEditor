@@ -371,10 +371,11 @@ function web_editor() {
                 contentType: "/application/json/",
                 success: function(info){
                     authors = info
-                                    }
-
+                    var template = $('#explore-template').html();
+                    Mustache.parse(template);
+                }
             });
-        }
+        } 
     }
         // TODO: Open a modal that shows the forks of the current gist
 
