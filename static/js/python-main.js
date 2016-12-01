@@ -461,7 +461,7 @@ function web_editor() {
             });
         } 
     }
-
+    
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {
         // Snippets are triggered by typing a keyword followed by pressing TAB.
