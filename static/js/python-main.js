@@ -360,7 +360,6 @@ function web_editor() {
 
     // This function describes what to do when the explore button is clicked.
     function doExplore() {
-        var gistID = "b3489bc81db9deb93c2a9eff7482eab2";
         var authors = {};
 
         if(gistID === ""){
