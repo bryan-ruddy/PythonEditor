@@ -53,6 +53,13 @@ def load(gist_id):
     content = api.content(gist_id)["microbit.py"]
     return jsonify(content=content)
 
+@app.route("/explore/<gist_id>/", methods=["GET"])
+def explore(gist_id):
+    authors = []
+    info = api.files(gist_id)
+    for name,details in info.items():
+        authors.append(name[:-3])
+    return authors
 
 @app.route("/save/<gist_id>/", methods=["POST"])
 def save(gist_id):
