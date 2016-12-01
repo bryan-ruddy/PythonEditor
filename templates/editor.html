@@ -94,14 +94,15 @@ Nicholas and Damien.
             <h2><i class="fa fa-cogs"></i> <strong>Explore</strong></h2>
             <p></p>
             <ul class="explore-list" >
-                {{#entries}}
+                {{#authors}}
                     <li class="explore-entry">
-                        <button type="submit" id="explore-button">
-                            {{author}}
+                        <button type="submit" class="open author" data-name="{{.}}">
+                            {{.}}
                         </button>
                     </li>
-                {{/entries}}
+                {{/authors}}
             <ul>
+        {% endraw %}
         </script>
 
 

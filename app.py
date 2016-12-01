@@ -47,9 +47,9 @@ def load(gist_id, file_name):
 def explore(gist_id):
     authors = []
     info = api.files(gist_id)
-    for name,details in info.items():
+    for name, details in info.items():
         authors.append(name[:-3])
-    return authors
+    return jsonify(authors=authors)
 
 @app.route("/save/<gist_id>/<file_name>", methods=["POST"])
 def save(gist_id, file_name):
