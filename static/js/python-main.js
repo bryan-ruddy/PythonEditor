@@ -176,7 +176,8 @@ function web_editor() {
 
     // Indicates if there are unsaved changes to the content of the editor.
     var dirty = false;
-
+    // Sets a variable with scope of the web editor which allows us to add forking and overwriting previous saves
+    var gistID = "";
     // Sets the description associated with the code displayed in the UI.
     function setDescription(x) {
         $("#script-description").text(x);
@@ -359,9 +360,24 @@ function web_editor() {
 
     // This function describes what to do when the explore button is clicked.
     function doExplore() {
-        // TODO: Open a modal that shows the forks of the current gist
-        // TODO: If no gist is loaded then show the load modal first
+        var gistID = "b3489bc81db9deb93c2a9eff7482eab2";
+        var authors = {};
+
+        if(gistID === ""){
+            alert("You must load a gist before attempting to explore the files");
+        }else{
+            $.ajax({
+                url: "/explore/" + gistID, 
+                type: 'GET',
+                contentType: "/application/json/",
+                success: function(info){
+                    authors = info
+                                    }
+
+            });
+        }
     }
+        // TODO: Open a modal that shows the forks of the current gist
 
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {
