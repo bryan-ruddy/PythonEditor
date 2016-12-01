@@ -311,11 +311,11 @@ function web_editor() {
             window.open('data:application/octet;charset=utf-8,' + encodeURIComponent(output), '_newtab');
         } else {
             if (author = ""){
-                var filename = 'microbit.py'.replace(" ", "_");
+                var filename = 'microbit'.replace(" ", "_");
                 var blob = new Blob([output], {type: "application/octet-stream"});
                 saveAs(blob, filename + ".hex");
             } else {
-                var filename = (getDescription() + '.py').replace(" ", "_");
+                var filename = getDescription().replace(" ", "_");
                 var blob = new Blob([output], {type: "application/octet-stream"});
                 saveAs(blob, filename + ".hex");
             }
