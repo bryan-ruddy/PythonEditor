@@ -28,29 +28,19 @@ def editor():
 def help():
     return render_template("help.html")
 
-
-@app.route("/create/", methods=["POST"])
-def create():
+@app.route("/create/<file_name>/", methods=["POST"])
+def create(file_name):
     content = request.get_json()["content"]
     html_url = api.create(
         desc="Gist containing micro python micro:bit code",
         public=True,
-        files={"microbit.py": {"content": content}})
+        files={file_name: {"content": content}})
     gist_id = html_url.split("/").pop()
     return jsonify(id=gist_id), 201
 
-
-@app.route("/fork/<gist_id>/", methods=["GET"])
-def fork(gist_id):
-    resp = api.fork(gist_id)
-    html_url = resp.json()["html_url"]
-    gist_id = html_url.split("/").pop()
-    return jsonify(id=gist_id), 201
-
-
-@app.route("/load/<gist_id>/")
-def load(gist_id):
-    content = api.content(gist_id)["microbit.py"]
+@app.route("/load/<gist_id>/<file_name>/")
+def load(gist_id, file_name):
+    content = api.content(gist_id)[file_name]
     return jsonify(content=content)
 
 @app.route("/explore/<gist_id>/", methods=["GET"])
@@ -61,8 +51,8 @@ def explore(gist_id):
         authors.append(name[:-3])
     return authors
 
-@app.route("/save/<gist_id>/", methods=["POST"])
-def save(gist_id):
+@app.route("/save/<gist_id>/<file_name>", methods=["POST"])
+def save(gist_id, file_name):
     content = request.get_json()["content"]
     # We have to call this request manually because the gist api assumes that
     # edits happen in the terminal (e.g. using vim) and are then git pushed
@@ -77,7 +67,7 @@ def save(gist_id):
         },
         params={'access_token': api.token},
         data=json.dumps({
-            "files": {"microbit.py": {
+            "files": {file_name: {
                 "content": content
             }}
         })

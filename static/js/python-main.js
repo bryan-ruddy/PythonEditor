@@ -176,26 +176,27 @@ function web_editor() {
 
     // Indicates if there are unsaved changes to the content of the editor.
     var dirty = false;
-    // Sets a variable with scope of the web editor which allows us to add forking and overwriting previous saves
+
+    // Stores the latest gist link but this will be empty at start
     var gistID = "";
     // Sets the description associated with the code displayed in the UI.
     function setDescription(x) {
-        $("#script-description").text(x);
+        $("#author").val(x);
     }
 
     // Sets the name associated with the code displayed in the UI.
     function setName(x) {
-        $("#script-name").text(x);
+        $("#name").val(x);
     }
 
     // Gets the description associated with the code displayed in the UI.
     function getDescription() {
-        return $("#script-description").text();
+        return $("#author").val();
     }
 
     // Gets the name associated with the code displayed in the UI.
     function getName() {
-        return $("#script-name").text();
+        return $("#name").val();
     }
 
     // Get the font size of the text currently displayed in the editor.
@@ -234,13 +235,13 @@ function web_editor() {
         EDITOR = pythonEditor('editor');
         if(!message.name) {
             // If there's no name, default to something sensible.
-            setName("microbit");
+            setName("microbit.py");
         } else {
             setName(message.name);
         }
         if (!message.comment) {
             // If there's no description, default to something sensible.
-            setDescription("A MicroPython script");
+            setDescription("");
         } else {
             setDescription(message.comment);
         }
@@ -316,48 +317,76 @@ function web_editor() {
 
     // This function describes what to do when the save button is clicked.
     function doSave() {
-        console.log("works");
-        var content = EDITOR.getCode() + "#~*" + getDescription() + "," + getName();
-        console.error(content);
+        var icon = $("#command-save i");
+        icon.removeClass("fa-download");
+        icon.addClass("fa-spin").addClass("fa-spinner");
+
+        var content = EDITOR.getCode() + "#~*" + getDescription();
         var gistpush = {
-            "description": getDescription(),
-            "public": true,
-            "files": {
-                "microbit.py": {
-                    "content": content
-                }
-            }
+            "content": content
         };
-        $.ajax({
-            type: 'POST',
-            url: 'https://api.github.com/gists',
-            data: JSON.stringify(gistpush),
-            success: function(gist,message,raw){alert(gist.html_url)}
-        });
 
+        if (gistID === "") {
+            $.ajax({
+                type: 'POST',
+                url: '/create/microbit.py/',
+                contentType: "application/json",
+                data: JSON.stringify(gistpush),
+                success: function(gist, message, raw) {
+                    gistID = gist.id;
+                    var template = $('#save-template').html();
+                    Mustache.parse(template);
+                    vex.open({
+                        content: Mustache.render(template, {gistID, gistID})
+                    });
+                    icon.addClass("fa-download");
+                    icon.removeClass("fa-spin").removeClass("fa-spinner");
+                }
+            });
+        } else {
+            if (getDescription() !== "microbit" && getDescription() !== ""){
+                $.ajax({
+                    type: 'POST',
+                    url: '/save/' + gistID + '/' + getDescription() + '.py',
+                    contentType: "application/json",
+                    data: JSON.stringify(gistpush),
+                    success: function(gist, message, raw) {
+                        icon.addClass("fa-download");
+                        icon.removeClass("fa-spin").removeClass("fa-spinner");
+                    }
+                });
+            } else {
+                var template = $('#save-noauthor').html();
+                Mustache.parse(template);
+                vex.open({
+                    content: Mustache.render(template)
+                })
 
-        // TODO: Push code into new gist, forking the current gist if available
-
+                icon.addClass("fa-download");
+                icon.removeClass("fa-spin").removeClass("fa-spinner");
+            }
+        }
     }
 
     // This function describes what to do when the load button is clicked.
     function doLoad() {
         // TODO: Display a modal that asks for a gist URL to load
         var url = window.prompt("GIST URL");
-        // var url = 'https://gist.github.com/ben-dent/8c8f0625d99fe2841d45ebe1b5d0b8c9';
-        var id = url.split('/').pop();
-        var githubAPI = 'https://api.github.com/gists/' + id;
+        gistID = url;
+        if (url !== null){
+            var id = url.split('/').pop();
+            var githubAPI = '/load/' + id + '/' + 'microbit' + '.py';
 
-        $.getJSON(githubAPI, function(data){
-            var unsplit = data.files["microbit.py"].content;
-            var split = unsplit.split('#~*');
-            EDITOR.setCode(split[0]);
-            var header = split[1].split(',');
-            setDescription(header[0]);
-            setName(header[1]);
-        });
+            $.getJSON(githubAPI, function(data){
+                var unsplit = data.content;
+                var split = unsplit.split('#~*');
+                EDITOR.setCode(split[0]);
+                var header = split[1].split(',');
+                setDescription(header[0]);
+                setName(header[1]);
+            });
+        }  
     }
-
     // This function describes what to do when the explore button is clicked.
     function doExplore() {
         var authors = {};
@@ -378,7 +407,6 @@ function web_editor() {
         } 
     }
         // TODO: Open a modal that shows the forks of the current gist
-
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {
         // Snippets are triggered by typing a keyword followed by pressing TAB.

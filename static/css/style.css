@@ -72,9 +72,7 @@ body, input {
 /* Script info box */
 #script-box {
   margin-right: 1rem;
-  margin-left: 1rem;
-  text-align: right;
-  width: 100%;
+  margin-left: auto;
 }
 
 #script-name {
