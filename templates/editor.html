@@ -112,6 +112,13 @@ Nicholas and Damien.
             {% endraw %}
         </script>
 
+        <script id="load-template" type="x-tmpl-mustache">{% raw %}
+            <h2>Please enter your Save ID:</h2>
+            <input type = "text" id = "loadID">
+            <p></p>
+            <button type = "submit" id = "command-loadID">Submit</button>
+        {% endraw %}</script>
+
         <script id="explore-template-noID" type="x-tmpl-mustache">{% raw %}
             <h2>Errors</h2>
             <p>Please load a gist ID before trying to explore</p>

@@ -180,6 +180,9 @@ function web_editor() {
     // Stores the latest gist link but this will be empty at start
     var gistID = "";
 
+    // Temporary ID storage
+    var id = ""
+
     // Sets the description associated with the code displayed in the UI.
     function setDescription(x) {
         $("#author").val(x);
@@ -399,7 +402,16 @@ function web_editor() {
     // This function describes what to do when the load button is clicked.
     function doLoad() {
         if(gistID === ""){
-            var id = window.prompt("GIST ID");
+            var template = $('#load-template').html();
+                    Mustache.parse(template);
+                    vex.open({
+                        content: Mustache.render(template)
+                    });
+            $("#command-loadID").click(function() {
+                    id = $("#loadID").val();
+                    vex.close();
+            });
+
             if(id !== ""){
                 gistID = id;   
             }
