@@ -180,6 +180,9 @@ function web_editor() {
     // Stores the latest gist link but this will be empty at start
     var gistID = "";
 
+    // Temporary ID storage
+    var id = ""
+
     // Sets the description associated with the code displayed in the UI.
     function setDescription(x) {
         $("#author").val(x);
@@ -399,9 +402,41 @@ function web_editor() {
     // This function describes what to do when the load button is clicked.
     function doLoad() {
         if(gistID === ""){
-            var id = window.prompt("GIST ID");
+            var template = $('#load-template').html();
+                    Mustache.parse(template);
+                    vex.open({
+                        content: Mustache.render(template)
+                    });
+            $("#command-loadID").click(function() {
+                    id = $("#loadID").val();
+                    vex.close();
+                    
+                    if(id !== ""){
+                        gistID = id;
+                        var url = '/load/' + gistID + '/microbit.py';
+                        $.ajax({
+                            url: url,
+                            contentType: 'application/json',
+                            success: function(content){
+                            EDITOR.setCode(content.content);
+                            setDescription("");
+                                }
+                            });  
+                        }
+                    });
+
             if(id !== ""){
-                gistID = id;   
+                console.log("Ok");
+                gistID = id;
+                var url = '/load/' + gistID + '/microbit.py';
+                $.ajax({
+                    url: url,
+                    contentType: 'application/json',
+                    success: function(content){
+                    EDITOR.setCode(content.content);
+                    setDescription("microbit");
+                }
+            });   
             }
         }
         if(gistID !== ""){
@@ -461,7 +496,6 @@ function web_editor() {
             });
         } 
     }
-    
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {
         // Snippets are triggered by typing a keyword followed by pressing TAB.
