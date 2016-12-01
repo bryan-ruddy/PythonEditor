@@ -328,7 +328,7 @@ function web_editor() {
         icon.removeClass("fa-download");
         icon.addClass("fa-spin").addClass("fa-spinner");
 
-        var content = EDITOR.getCode() + "#~*" + getDescription();
+        var content = EDITOR.getCode();
         var gistpush = {
             "content": content
         };
@@ -398,23 +398,24 @@ function web_editor() {
 
     // This function describes what to do when the load button is clicked.
     function doLoad() {
-        // TODO: Display a modal that asks for a gist URL to load
         if(gistID === ""){
-            var url = window.prompt("GIST URL");
-            gistID = url;
-        }else{
-            var id = url.split('/').pop();
-            var githubAPI = '/load/' + id + '/' + 'microbit' + '.py';
-
-            $.getJSON(githubAPI, function(data){
-                var unsplit = data.content;
-                var split = unsplit.split('#~*');
-                EDITOR.setCode(split[0]);
-                var header = split[1].split(',');
-                setDescription(header[0]);
-                setName(header[1]);
+            var id = window.prompt("GIST ID");
+            if(id !== ""){
+                gistID = id;   
+            }
+        }
+        if(gistID !== ""){
+            var url = '/load/' + gistID + '/microbit.py';
+            $.ajax({
+                    url: url,
+                    contentType: 'application/json',
+                    success: function(content){
+                    EDITOR.setCode(content.content);
+                    setDescription("microbit");
+                }
             });
-        }  
+        }
+          
     }
 
     function doLoadAuthor(author) {
@@ -425,8 +426,7 @@ function web_editor() {
                 var split = unsplit.split('#~*');
                 EDITOR.setCode(split[0]);
                 var header = split[1].split(',');
-                setDescription(header[0]);
-                setName(header[1]);
+                setDescription(author);
             });
     }  
     
@@ -434,14 +434,17 @@ function web_editor() {
     // This function describes what to do when the explore button is clicked.
     function doExplore() {
         if(gistID === ""){
-            alert("You must load a gist before attempting to explore the files");
+            var template = $('#explore-template-noID').html();
+                    Mustache.parse(template);
+                    vex.open({
+                        content: Mustache.render(template)
+                    });
         }else{
             $.ajax({
                 url: "/explore/" + gistID +"/", 
                 type: 'GET',
                 contentType: "application/json",
                 success: function(info){
-                    console.log(info);
                     var template = $('#explore-template').html();
                     Mustache.parse(template);
                     
@@ -449,7 +452,8 @@ function web_editor() {
                         content: Mustache.render(template, info) 
                     });
                     $(".open.author").click(function() {
-                        doLoadAuthor($(this).data("name"))
+                        var author = $(this).data("name")
+                        doLoadAuthor(author)
                         vex.close()
                     });
 
@@ -457,12 +461,7 @@ function web_editor() {
             });
         } 
     }
-<<<<<<< HEAD
 
-=======
-        // TODO: Open a modal that shows the forks of the current gist
-    
->>>>>>> ac5ee8722f7744cd62d1283db8ca79ae9a66f322
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {
         // Snippets are triggered by typing a keyword followed by pressing TAB.
