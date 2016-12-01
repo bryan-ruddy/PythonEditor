@@ -24,7 +24,7 @@ def editor():
     return render_template("editor.html")
 
 
-@app.route("/help")
+@app.route("/help/")
 def help():
     return render_template("help.html")
 
@@ -44,7 +44,7 @@ def load(gist_id, file_name):
     return jsonify(content=content)
 
 
-@app.route("/save/<gist_id>/<file_name>/", methods=["POST"])
+@app.route("/save/<gist_id>/<file_name>", methods=["POST"])
 def save(gist_id, file_name):
     content = request.get_json()["content"]
     # We have to call this request manually because the gist api assumes that
