@@ -309,9 +309,15 @@ function web_editor() {
             alert("Safari has a bug that means your work will be downloaded as an un-named file. Please rename it to something ending in .hex. Alternatively, use a browser such as Firefox or Chrome. They do not suffer from this bug.");
             window.open('data:application/octet;charset=utf-8,' + encodeURIComponent(output), '_newtab');
         } else {
-            var filename = getName().replace(" ", "_");
-            var blob = new Blob([output], {type: "application/octet-stream"});
-            saveAs(blob, filename + ".hex");
+            if (author = ""){
+                var filename = 'microbit.py'.replace(" ", "_");
+                var blob = new Blob([output], {type: "application/octet-stream"});
+                saveAs(blob, filename + ".hex");
+            } else {
+                var filename = (author + '.py').replace(" ", "_");
+                var blob = new Blob([output], {type: "application/octet-stream"});
+                saveAs(blob, filename + ".hex");
+            }
         }
     }
 
