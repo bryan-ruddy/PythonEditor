@@ -410,10 +410,33 @@ function web_editor() {
             $("#command-loadID").click(function() {
                     id = $("#loadID").val();
                     vex.close();
-            });
+                    
+                    if(id !== ""){
+                        gistID = id;
+                        var url = '/load/' + gistID + '/microbit.py';
+                        $.ajax({
+                            url: url,
+                            contentType: 'application/json',
+                            success: function(content){
+                            EDITOR.setCode(content.content);
+                            setDescription("");
+                                }
+                            });  
+                        }
+                    });
 
             if(id !== ""){
-                gistID = id;   
+                console.log("Ok");
+                gistID = id;
+                var url = '/load/' + gistID + '/microbit.py';
+                $.ajax({
+                    url: url,
+                    contentType: 'application/json',
+                    success: function(content){
+                    EDITOR.setCode(content.content);
+                    setDescription("microbit");
+                }
+            });   
             }
         }
         if(gistID !== ""){
