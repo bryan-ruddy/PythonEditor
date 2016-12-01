@@ -370,19 +370,22 @@ function web_editor() {
                 });
                 $("#command-saveAuthor").click(function() {
                     var author = $("#authorName").val();
+                    console.log(author);
 
-                    $.ajax({
-                    type: 'POST',
-                    url: '/save/' + gistID + '/' + author + '.py',
-                    contentType: "application/json",
-                    data: JSON.stringify(gistpush),
-                    success: function(gist, message, raw) {
-                        icon.addClass("fa-download");
-                        icon.removeClass("fa-spin").removeClass("fa-spinner");
-                        setDescription(author);
-                        vex.close();
+                    if (author.length > 0){
+                        $.ajax({
+                            type: 'POST',
+                            url: '/save/' + gistID + '/' + author + '.py',
+                            contentType: "application/json",
+                            data: JSON.stringify(gistpush),
+                            success: function(gist, message, raw) {
+                                icon.addClass("fa-download");
+                                icon.removeClass("fa-spin").removeClass("fa-spinner");
+                                setDescription(author);
+                                vex.close();
+                            }
+                        });
                     }
-                });
 
                     
                 });
