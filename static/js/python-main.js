@@ -179,6 +179,7 @@ function web_editor() {
 
     // Stores the latest gist link but this will be empty at start
     var gistID = "";
+
     // Sets the description associated with the code displayed in the UI.
     function setDescription(x) {
         $("#author").val(x);
@@ -309,9 +310,15 @@ function web_editor() {
             alert("Safari has a bug that means your work will be downloaded as an un-named file. Please rename it to something ending in .hex. Alternatively, use a browser such as Firefox or Chrome. They do not suffer from this bug.");
             window.open('data:application/octet;charset=utf-8,' + encodeURIComponent(output), '_newtab');
         } else {
-            var filename = getName().replace(" ", "_");
-            var blob = new Blob([output], {type: "application/octet-stream"});
-            saveAs(blob, filename + ".hex");
+            if (author = ""){
+                var filename = 'microbit'.replace(" ", "_");
+                var blob = new Blob([output], {type: "application/octet-stream"});
+                saveAs(blob, filename + ".hex");
+            } else {
+                var filename = getDescription().replace(" ", "_");
+                var blob = new Blob([output], {type: "application/octet-stream"});
+                saveAs(blob, filename + ".hex");
+            }
         }
     }
 
@@ -360,7 +367,28 @@ function web_editor() {
                 Mustache.parse(template);
                 vex.open({
                     content: Mustache.render(template)
-                })
+                });
+                $("#command-saveAuthor").click(function() {
+                    var author = $("#authorName").val();
+                    console.log(author);
+
+                    if (author.length > 0){
+                        $.ajax({
+                            type: 'POST',
+                            url: '/save/' + gistID + '/' + author + '.py',
+                            contentType: "application/json",
+                            data: JSON.stringify(gistpush),
+                            success: function(gist, message, raw) {
+                                icon.addClass("fa-download");
+                                icon.removeClass("fa-spin").removeClass("fa-spinner");
+                                setDescription(author);
+                                vex.close();
+                            }
+                        });
+                    }
+
+                    
+                });
 
                 icon.addClass("fa-download");
                 icon.removeClass("fa-spin").removeClass("fa-spinner");
@@ -406,6 +434,7 @@ function web_editor() {
         }
     }
         // TODO: Open a modal that shows the forks of the current gist
+    
     // This function describes what to do when the snippets button is clicked.
     function doSnippets() {
         // Snippets are triggered by typing a keyword followed by pressing TAB.
