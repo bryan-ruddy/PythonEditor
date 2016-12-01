@@ -38,7 +38,7 @@ def create(file_name):
     gist_id = html_url.split("/").pop()
     return jsonify(id=gist_id), 201
 
-@app.route("/load/<gist_id>/<file_name>/")
+@app.route("/load/<gist_id>/<file_name>")
 def load(gist_id, file_name):
     content = api.content(gist_id)[file_name]
     return jsonify(content=content)
