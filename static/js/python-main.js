@@ -176,15 +176,9 @@ function web_editor() {
 
     // Indicates if there are unsaved changes to the content of the editor.
     var dirty = false;
-<<<<<<< HEAD
 
     // Stores the latest gist link but this will be empty at start
     var gistID = "";
-
-=======
-    // Sets a variable with scope of the web editor which allows us to add forking and overwriting previous saves
-    var gistID = "";
->>>>>>> 1b081ed27c0c69fc6d0f660a073db3759ecbecd3
     // Sets the description associated with the code displayed in the UI.
     function setDescription(x) {
         $("#author").val(x);
@@ -335,7 +329,7 @@ function web_editor() {
         if (gistID === "") {
             $.ajax({
                 type: 'POST',
-                url: '/create/' + 'microbit' + '.py',
+                url: '/create/microbit.py/',
                 contentType: "application/json",
                 data: JSON.stringify(gistpush),
                 success: function(gist, message, raw) {
@@ -368,8 +362,8 @@ function web_editor() {
                     content: Mustache.render(template)
                 })
 
-                // icon.addClass("fa-download");
-                // icon.removeClass("fa-spin").removeClass("fa-spinner");
+                icon.addClass("fa-download");
+                icon.removeClass("fa-spin").removeClass("fa-spinner");
             }
         }
     }
