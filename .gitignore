@@ -11,13 +11,3 @@ Desktop.ini
 $RECYCLE.BIN/
 *.swp
 .vagrant
-
-# Temp directory used for unit testing
-tests/spec/test-files/temp-test-files/
-
-# Node
-node_modules/
-
-# vscode
-.history
-.vscode/settings.json

@@ -1,7 +1,6 @@
 // An editor needs to be instantiated *before* the tests are run so the
 // snippets are created so they can be referenced within the tests. Yay
 // JavaScript. :-(
-$('body').append('<div id="fooeditor"></div>');
 var faux_editor = pythonEditor('fooeditor');
 
 
@@ -11,11 +10,7 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
     describe("The editor initialises as expected.", function() {
 
         beforeEach(function() {
-            $('body').append('<div id="editor"></div>');
-        });
-
-        afterEach(function() {
-            $('#editor').remove();
+            affix("#editor");
         });
 
         it("The editor is associated with the referenced div.", function() {
@@ -26,20 +21,18 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
             var dom_editor = $('#editor');
             expect(dom_editor.children().length).toBeGreaterThan(0);
             // It references the expected classes.
-            var editorClasses = dom_editor.attr('class');
-            expect(editorClasses.indexOf('ace_editor')).toBeGreaterThan(-1);
-            expect(editorClasses.indexOf('ace-kr-theme')).toBeGreaterThan(-1);
-            expect(editorClasses.indexOf('ace_dark')).toBeGreaterThan(-1);
+            var expected_classes = ' ace_editor ace-kr-theme ace_dark';
+            expect(dom_editor.attr('class')).toEqual(expected_classes);
         });
 
         it("The expected theme is kr_theme.", function() {
             var editor = pythonEditor('editor');
-            expect(editor.ACE.getTheme()).toEqual('ace/theme/kr_theme_legacy');
+            expect(editor.ACE.getTheme()).toEqual('ace/theme/kr_theme');
         });
 
         it("The editor mode is set to 'Python'.", function() {
             var editor = pythonEditor('editor');
-            expect(editor.ACE.getOption('mode')).toEqual('ace/mode/python_microbit');
+            expect(editor.ACE.getOption('mode')).toEqual('ace/mode/python');
         });
 
         it("Snippets are enabled.", function() {
@@ -64,13 +57,9 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
         var dom_editor;
 
         beforeEach(function() {
-            $('body').append('<div id="editor"></div>');
+            affix("#editor");
             editor = pythonEditor('editor');
             dom_editor = $('#editor');
-        });
-
-        afterEach(function() {
-            $('#editor').remove();
         });
 
         it("It's possible to set / get the code to be edited.", function() {
@@ -92,7 +81,7 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
         var mock;
 
         beforeEach(function() {
-            $('body').append('<div id="editor"></div>');
+            affix("#editor");
             editor = pythonEditor('editor');
 
             mock = {
@@ -102,10 +91,6 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
             spyOn(mock, 'handler');
             editor.on_change(mock.handler);
             editor.setCode('foo');
-        });
-
-        afterEach(function() {
-            $('#editor').remove();
         });
 
         it("The editor calls the referenced function when the text changes.",
@@ -120,14 +105,10 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
         var snippetManager;
 
         beforeEach(function() {
-            $('body').append('<div id="editor"></div>');
+            affix("#editor");
             editor = pythonEditor('editor');
             snippetManager = ace.require("ace/snippets").snippetManager;
             spyOn(snippetManager, 'insertSnippet');
-        });
-
-        afterEach(function() {
-            $('#editor').remove();
         });
 
         it("The editor returns all available snippet objects.", function() {
@@ -160,33 +141,29 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
                 ":00000001FF\n";
 
         beforeEach(function() {
-            $('body').append('<div id="editor"></div>');
+            affix("#editor");
             editor = pythonEditor('editor');
-        });
-
-        afterEach(function() {
-            $('#editor').remove();
         });
 
         it("The editor complains if the Python script is greater than 8k in length.", function() {
             var hex_fail = function() {
                 // Keep in mind the 4 Bytes header
                 var codeLen = (8 * 1024) - 4 + 1;
-                var result = microbitFs.addIntelHexAppendedScript(template_hex, new Array(codeLen + 1).join('a'));
+                var result = upyhex.injectPyStrIntoIntelHex(template_hex, new Array(codeLen + 1).join('a'));
             };
             expect(hex_fail).toThrowError(RangeError, 'Too long');
         });
 
         it("The editor is fine if the Python script is 8k in length.", function() {
             var codeLen = (8 * 1024) - 4;
-            var hexified = microbitFs.addIntelHexAppendedScript(template_hex, new Array(codeLen + 1).join('a'));
+            var hexified = upyhex.injectPyStrIntoIntelHex(template_hex, new Array(codeLen + 1).join('a'));
             expect(hexified).not.toBe(null);
         });
 
         it("A hex file is generated from the script and template firmware.",
            function() {
             editor.setCode('display.scroll("Hello")');
-            var result = microbitFs.addIntelHexAppendedScript(template_hex, editor.getCode());
+            var result = editor.getHexFile(template_hex);
             var expected = ":020000040000FA\n" +
                 ":1000000000400020ED530100295401002B54010051\n" +
                 ":020000040003F7\n" +
@@ -202,12 +179,8 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
         var editor;
 
         beforeEach(function() {
-            $('body').append('<div id="editor"></div>');
+            affix("#editor");
             editor = pythonEditor('editor');
-        });
-
-        afterEach(function() {
-            $('#editor').remove();
         });
 
         it("The editor converts from Intel's hex format to text", function() {
@@ -215,7 +188,7 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
                 ":10E000004D501700646973706C61792E7363726F81\n" +
                 ":10E010006C6C282248656C6C6F222900000000009F\n" +
                 ":00000001FF\n";
-            var result = microbitFs.getIntelHexAppendedScript(raw_hex);
+            var result = upyhex.extractPyStrFromIntelHex(raw_hex);
             var expected = 'display.scroll("Hello")';
             expect(result).toEqual(expected);
         });
@@ -230,7 +203,7 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
                 ":10E010006C6C282248656C6C6F222900000000009F\n" +
                 ":04000005000153EDB6\n" +
                 ":00000001FF";
-            var result = microbitFs.getIntelHexAppendedScript(raw_hex);
+            var result = upyhex.extractPyStrFromIntelHex(raw_hex);
             var expected = 'display.scroll("Hello")';
             expect(result).toEqual(expected);
         });
@@ -241,8 +214,33 @@ describe("An editor for MicroPython on the BBC micro:bit:", function() {
                 ":04B2D0000D0100006C\n" +
                 ":04000005000153EDB6\n" +
                 ":00000001FF";
-            var result = microbitFs.getIntelHexAppendedScript(raw_hex);
+            var result = upyhex.extractPyStrFromIntelHex(raw_hex);
             var expected = '';
+            expect(result).toEqual(expected);
+        });
+    });
+
+    describe("It's possible to encrypt and decrypt scripts.", function() {
+
+        var editor;
+
+        beforeEach(function() {
+            affix("#editor");
+            editor = pythonEditor('editor');
+        });
+
+        it("The editor encrypts plaintext to URL safe cyphertext with a passphrase.", function() {
+            var plaintext = "Hello, world";
+            var passphrase = "password";
+            var result = editor.encrypt(passphrase, plaintext);
+            expect(plaintext).toEqual(editor.decrypt(passphrase, result));
+        });
+
+        it("The editor decrypts a URL safe cyphertext to plaintext with a passphrase.", function() {
+            var cyphertext = "U2FsdGVkX1%2FlI5ZAWvG6lrNyGcYXCRN7l9EHmdQgqNU%3D";
+            var passphrase = "password";
+            var result = editor.decrypt(passphrase, cyphertext);
+            var expected = "Hello, world";
             expect(result).toEqual(expected);
         });
     });

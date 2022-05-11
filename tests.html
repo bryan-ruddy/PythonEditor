@@ -13,20 +13,19 @@
       charset="utf-8"></script>
   <script src="ace/ext-language_tools.js" type="application/javascript"
       charset="utf-8"></script>
-  <script src="static/js/jquery-2.1.4.min.js"></script>
-  <script src="static/js/jquery.browser.min.js"></script>
-  <script src="static/js/microbit-fs.umd.min.js"></script>
-  <script src="js/micropythonapi.js"></script>
-  <script src="js/urlparser.js"></script>
-  <script src="js/fs.js"></script>
-  <script src="js/python-main.js"></script>
+  <script src="static/js/jquery-2.1.4.min.js"
+      type="application/javascript"></script>
+  <script src="static/js/forge.min.js" type="application/javascript"></script>
+  <script src="static/js/polyfill.min.js" type="application/javascript"></script>
+  <script src="static/js/intel-hex.browser.js" type="application/javascript"></script>
+  <script src="hexlify.js" type="application/javascript"></script>
+  <script src="python-main.js" type="application/javascript"></script>
+  <script src="tests/lib/jasmine-fixture.js"
+      type="application/javascript"></script>
 </head>
 <body>
+    <div id="fooeditor"></div>
     <!-- include spec files here... -->
     <script src="tests/spec/python-spec.js"></script>
-    <script src="tests/spec/urlparser-spec.js"></script>
-    <script src="tests/spec/fs-spec.js"></script>
-    <script src="tests/spec/micropythonapi-spec.js"></script>
-    <script src="tests/spec/polyfill-spec.js"></script>
 </body>
 </html>
